@@ -1,0 +1,139 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+// ✅ Placeholder가 적용된 텍스트 필드
+class PlaceholderTextField extends JTextField {
+    private final String placeholder;
+
+    public PlaceholderTextField(String placeholder) {
+        this.placeholder = placeholder;
+        setText(placeholder);
+        setForeground(Color.GRAY);
+
+        addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (getText().equals(placeholder)) {
+                    setText("");
+                    setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (getText().isEmpty()) {
+                    setText(placeholder);
+                    setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+
+    @Override
+    public String getText() {
+        return super.getText().equals(placeholder) ? "" : super.getText();
+    }
+}
+
+// ✅ Placeholder가 적용된 비밀번호 필드
+class PlaceholderPasswordField extends JPasswordField {
+    private final String placeholder;
+    private boolean showingPlaceholder = true;
+
+    public PlaceholderPasswordField(String placeholder) {
+        this.placeholder = placeholder;
+        setText(placeholder);
+        setForeground(Color.GRAY);
+        setEchoChar((char) 0); // 보이게
+
+        addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (showingPlaceholder) {
+                    setText("");
+                    setForeground(Color.BLACK);
+                    setEchoChar('●');
+                    showingPlaceholder = false;
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (getPassword().length == 0) {
+                    setText(placeholder);
+                    setForeground(Color.GRAY);
+                    setEchoChar((char) 0);
+                    showingPlaceholder = true;
+                }
+            }
+        });
+    }
+
+    @Override
+    public String getText() {
+        return showingPlaceholder ? "" : new String(super.getPassword());
+    }
+}
+
+// ✅ 메인 UI 클래스
+public class EmergencyLoginUI extends JFrame {
+
+    public EmergencyLoginUI() {
+        setTitle("119긴급센터 로그인");
+        setSize(750, 600); // 1.5배 확대
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // 배경 패널
+        JPanel panel = new JPanel(new GridBagLayout()) {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                setBackground(new Color(240, 194, 161)); // 살구색 배경
+            }
+        };
+
+        // 중앙에 들어갈 박스
+        Box contentBox = Box.createVerticalBox();
+
+        JLabel titleLabel = new JLabel("119긴급센터");
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 48));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titleLabel.setForeground(Color.DARK_GRAY);
+
+        // placeholder가 적용된 필드
+        PlaceholderTextField emailField = new PlaceholderTextField("you@example.com");
+        emailField.setMaximumSize(new Dimension(400, 50));
+        emailField.setFont(new Font("SansSerif", Font.PLAIN, 18));
+
+        PlaceholderPasswordField passwordField = new PlaceholderPasswordField("password");
+        passwordField.setMaximumSize(new Dimension(400, 50));
+        passwordField.setFont(new Font("SansSerif", Font.PLAIN, 18));
+
+        JButton loginButton = new JButton("Login");
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setPreferredSize(new Dimension(120, 50));
+        loginButton.setMaximumSize(new Dimension(120, 50));
+        loginButton.setBackground(Color.DARK_GRAY);
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setFont(new Font("SansSerif", Font.BOLD, 16));
+
+        contentBox.add(titleLabel);
+        contentBox.add(Box.createVerticalStrut(40));
+        contentBox.add(emailField);
+        contentBox.add(Box.createVerticalStrut(20));
+        contentBox.add(passwordField);
+        contentBox.add(Box.createVerticalStrut(30));
+        contentBox.add(loginButton);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(contentBox, gbc);
+
+        add(panel);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(EmergencyLoginUI::new);
+    }
+}

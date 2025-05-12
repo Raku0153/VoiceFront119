@@ -1,0 +1,93 @@
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+
+public class ReportInProgressUI extends JFrame {
+
+    public ReportInProgressUI() {
+        setTitle("신고 진행 중");
+        setSize(850, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(255, 230, 204)); // 연한 주황색 배경
+
+        // 왼쪽 - 대화 내용
+        JTextArea dialogueArea = new JTextArea(
+            "-여보세요"+
+            "-예"+
+            "-이 계속 전화 하고 전화 하는데도 안 열려갖고요."+
+            "-예 예 지금 개."+
+            "-예 예, 불은 켜져 있는데."+
+            "-일단 계속 두들기는데도 열 생각을 안 해요."+
+            "-예 예, 문자도 보내고 지금 카톡도 하고"+
+            "-예, 알겠습니다.");
+        dialogueArea.setLineWrap(true);
+        dialogueArea.setWrapStyleWord(true);
+        dialogueArea.setEditable(false);
+        dialogueArea.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        JScrollPane dialogueScroll = new JScrollPane(dialogueArea);
+        dialogueScroll.setPreferredSize(new Dimension(500, 300));
+        dialogueScroll.setBorder(BorderFactory.createEmptyBorder());
+
+        // 오른쪽 - 시간 및 사고 정보
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setOpaque(false);
+
+        JLabel timeLabel = new JLabel("2025-03-26\n13:25:42");
+        timeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 16));
+
+        JLabel typeLabel = new JLabel("안전사고(구조-중)");
+        typeLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+
+        infoPanel.add(timeLabel);
+        infoPanel.add(Box.createVerticalStrut(5));
+        infoPanel.add(typeLabel);
+
+        // 메모 필드
+        JTextArea memoArea = new JTextArea("메모");
+        memoArea.setPreferredSize(new Dimension(200, 100));
+        memoArea.setLineWrap(true);
+        memoArea.setWrapStyleWord(true);
+        JScrollPane memoScroll = new JScrollPane(memoArea);
+
+        // 위쪽 레이아웃 구성
+        JPanel topPanel = new JPanel(new BorderLayout(10, 10));
+        topPanel.setOpaque(false);
+        topPanel.add(dialogueScroll, BorderLayout.CENTER);
+
+        JPanel rightTopPanel = new JPanel();
+        rightTopPanel.setLayout(new BoxLayout(rightTopPanel, BoxLayout.Y_AXIS));
+        rightTopPanel.setOpaque(false);
+        rightTopPanel.add(infoPanel);
+        rightTopPanel.add(Box.createVerticalStrut(20));
+        rightTopPanel.add(memoScroll);
+
+        topPanel.add(rightTopPanel, BorderLayout.EAST);
+
+        // 아래쪽 - 신고 요약 정보
+        JTextArea reportSummary = new JTextArea("신고 내용: 딸이 집 안에 있음에도 불구하고 문을 열지 않으며, 전화 및 문자에도 응답하지 않음"+
+        "\n"+"주소: 서울특별시 마포구 성산동 이후 상황에 따라 경찰 및 추가 의료 지원이 필요할 수 있음.");
+        reportSummary.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        reportSummary.setLineWrap(true);
+        reportSummary.setWrapStyleWord(true);
+        reportSummary.setEditable(false);
+        reportSummary.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        reportSummary.setBackground(new Color(255, 245, 230));
+        JScrollPane summaryScroll = new JScrollPane(reportSummary);
+        summaryScroll.setPreferredSize(new Dimension(800, 150));
+
+        mainPanel.add(topPanel, BorderLayout.CENTER);
+        mainPanel.add(summaryScroll, BorderLayout.SOUTH);
+
+        add(mainPanel);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(ReportInProgressUI::new);
+    }
+}
